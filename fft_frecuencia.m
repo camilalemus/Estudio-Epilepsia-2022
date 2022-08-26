@@ -6,34 +6,41 @@
 % Universidad del Valle de Guatemala
 %--------------------------------------------------------------------------
 
-clc;
-clear;
+clc; clear;
 
-%%
+%% Transformada de Fourier para pasar al dominio de la frecuencia
+
 Fs = interictal_segment_1.sampling_frequency; % Frecuencia de muestreo en Hz                    
 Ts = 1/Fs;        % Período de muestreo
-N = interictal_segment_1.data(:,1);  % Longitud de la señal (número de muestras) Canal L1
-t = 20; % Vector de tiempo
-ventana = Fs*t; %Ventanear las muestras
+canal1 = interictal_segment_1.data(1,:);  % Longitud de la señal (número de muestras) Canal L1
 
+T = 20;
+N = T*Fs;
+t = (0:(N-1))*Ts;
 
-C1_F = fft(ventana); %Transformada de Fourier 
+parte = canal1(1:N);
+parte = parte - mean(parte);
+figure(1); clf;
+plot(t, parte);
 
+X1 = fft(parte); %Transformada de Fourier 
 
-% X1_s = fftshift(X1);
-% X2_s = fftshift(X2);
-% fshift = (-N/2:N/2-1)*(Fs/N); 
-% 
-% figure (1);
-% 
+f_posi = Fs*(0:(N/2))/N;
+
+P1 = abs(X1/N);
+P2 = P1(1:N/2+1);
+P2(2:end-1) = 2*P2(2:end-1);
+
+N100 = ceil(N*100/(Fs));
+
+figure(2); clf;
 % subplot(2,1,1);
-% stem(fshift,abs(X1_s/N),'r');
-% xlabel('Hertz (Hz)');
-% ylabel('Magnitud');
-% title('DFT Suma sinusoides ');
-% 
-% subplot(2,1,2);
-% stem(fshift,abs(X2_s/N));
-% xlabel('Hertz (Hz)');
-% ylabel('Magnitud');
-% title('DFT Suma sinusoides con ruido');
+stem(f_posi(1:N100),P2(1:N100),'r');
+% title('DFT sin ruido single-sided amplitude spectrum ');
+xlabel('Frecuencia (Hz)');
+ylabel('Magnitud');
+
+%% Extracción de Features
+
+
+

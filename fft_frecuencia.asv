@@ -9,37 +9,38 @@
 clc;
 clear;
 
-%%
-%data = interictal_segment_1.data;
+%% Transformada de Fourier
 Fs = interictal_segment_1.sampling_frequency; % Frecuencia de muestreo en Hz                    
 Ts = 1/Fs;        % Período de muestreo
-N = interictal_segment_1.data(:,1);  % Longitud de la señal (número de muestras)
-t = interictal_segment_1.data_length_sec; % Vector de tiempo
-tiempo = interictal_segment_1.data_length_sec;
+canal1 = interictal_segment_1.data(1,:);  % Longitud de la señal (número de muestras) Canal L1
 
-A1 = 0.6;
-f1 = 10;
-A2 = 1;
-f2 = 100;
-x1 = A1*sin(2*pi*f1*t) + A2*sin(2*pi*f2*t);
-x2 = x1 - 1 + 2*rand(1,length(t));
+T = 20;
+N = T*Fs;
+t = (0:(N-1))*Ts;
 
-X1 = fft(x1);
-X2 = fft(x2);
-X1_s = fftshift(X1);
-X2_s = fftshift(X2);
-fshift = (-N/2:N/2-1)*(Fs/N); 
+parte = canal1(1:N);
+parte = parte - mean(parte);
+figure(1); clf;
+plot(t, parte);
 
-figure (1);
+X1 = fft(parte); %Transformada de Fourier 
 
-subplot(2,1,1);
-stem(fshift,abs(X1_s/N),'r');
-xlabel('Hertz (Hz)');
+f_posi = Fs*(0:(N/2))/N;
+
+P1 = abs(X1/N);
+P2 = P1(1:N/2+1);
+P2(2:end-1) = 2*P2(2:end-1);
+
+N100 = ceil(N*100/(Fs));
+
+figure(2); clf;
+% subplot(2,1,1);
+stem(f_posi(1:N100),P2(1:N100),'r');
+% title('DFT sin ruido single-sided amplitude spectrum ');
+xlabel('Frecuencia (Hz)');
 ylabel('Magnitud');
-title('DFT Suma sinusoides ');
 
-subplot(2,1,2);
-stem(fshift,abs(X2_s/N));
-xlabel('Hertz (Hz)');
-ylabel('Magnitud');
-title('DFT Suma sinusoides con ruido');
+%% Extracción de Features
+
+
+
