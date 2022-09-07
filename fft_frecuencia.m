@@ -40,31 +40,4 @@ xlabel('Frecuencia (Hz)');
 ylabel('Magnitud');
 
 %% Extracción de Features
-%mean, median, variance, standard deviation, skewness, kurtosis
 
-media = mean(X1); 
-mediana = median(X1);
-varianza = var(X1);
-desv = std(X1);
-oblicuidad = skewness(X1);
-curtosis = kurtosis(X1);
-
-%Realizar ventana
-k=1;        %recorrer canales
-i=1;        %recorrer muestras
-
-size_c = length(canal1);
-channel_ventana = zeros(size_c,1);
-if mod(size_c/muestras,1)~=0 %si es decimal
-    size_cint = round(size_c/muestras)-1;
-else
-   size_cint = size_c/muestras; 
-end
-z = zeros(length(eeg),canales);
-zc = zeros(size_cint,canales);
-mav = zeros(size_cint,canales);
-desviacion = zeros(size_cint,canales);
-curtosis = zeros(size_cint,canales);
-%zero crossing index function
-max_amplitud = max(abs(channels))*0.02; % 2% de la amplitud de la señal 
-umbral = max(max_amplitud);
