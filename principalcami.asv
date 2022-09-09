@@ -26,9 +26,9 @@ c = 0; %que canales
 op = [1,1,1,0,0,0]; %vector para seleccionar opciones de features
 
 % Features
-MatrizFeatures = Features(datos_Sano,Fs_Sano,canales,muestras,c,op);
-save('MatrizFeatures.mat','MatrizFeatures');
-disp('Archivo guardado');
+MatrizFeaturesSano = Features(datos_Sano,Fs_Sano,canales,muestras,c,op);
+save('MatrizFeaturesSano.mat','MatrizFeaturesSano');
+disp('Archivo guardado sano');
 
 %% Ubonn ICTAL
 
@@ -36,3 +36,45 @@ disp('Archivo guardado');
 load('SetE_Ictal_UBonn.mat', 'eeg_struct')
 datos_Ictal = eeg_struct.data;
 Fs_Ictal = eeg_struct.sampling_frequency;
+
+% Parámetros función
+
+canales = 1; %numero de canales
+muestras = 173; %calcular numero de muestras con tiempo
+c = 0; %que canales
+op = [1,1,1,0,0,0]; %vector para seleccionar opciones de features
+
+% Features
+MatrizFeaturesIctal = Features(datos_Ictal,Fs_Ictal,canales,muestras,c,op);
+save('MatrizFeaturesIctal.mat','MatrizFeaturesIctal');
+disp('Archivo guardado ictal');
+
+%% Band Power PSD
+
+Delta_Sano = bandpower(datos_Sano,Fs_Sano,[0.5 4]); %delta (δ, 0.5–4 Hz)
+Theta_Sano = bandpower(datos_Sano,Fs_Sano,[4 8]); %theta (θ, 4–8 Hz)
+Alpha_Sano = bandpower(datos_Sano,Fs_Sano,[8 12]); %alpha (α, 8–12 Hz)
+Beta_Sano = bandpower(datos_Sano,Fs_Sano,[12 30]); %beta (β, 12–30 Hz
+Gamma_Sano = bandpower(datos_Sano,Fs_Sano,[30 100]); %gamma (γ, >30 Hz)
+Sigma_Sano = bandpower(datos_Sano,Fs_Sano,[12 14]); %sigma (σ, 12–14 Hz)
+
+Delta_Ictal = bandpower(datos_Ictal,Fs_Ictal,[0.5 4]); %delta (δ, 0.5–4 Hz)
+Theta_Ictal = bandpower(datos_Ictal,Fs_Ictal,[4 8]); %theta (θ, 4–8 Hz)
+Alpha_Ictal = bandpower(datos_Ictal,Fs_Ictal,[8 12]); %alpha (α, 8–12 Hz)
+Beta_Ictal = bandpower(datos_Ictal,Fs_Ictal,[12 30]); %beta (β, 12–30 Hz
+Gamma_Ictal = bandpower(datos_Ictal,Fs_Ictal,[30 100]); %gamma (γ, >30 Hz)
+Sigma_Ictal = bandpower(datos_Ictal,Fs_Ictal,[12 14]); %sigma (σ, 12–14 Hz)
+
+%% Features
+
+% Several ratios between frequency bands are widely used as features in 
+% the EEG signal analysis, i.e., θ/α [63], β/α [63], (θ + α)/β [64], 
+% θ/β [64], (θ + α)/(α + β) [64], γ/δ [65] and (γ + β)/(δ + α) [65].
+
+ratio_1 = Theta_Sano / Beta_Sano; % θ/β 
+ratio_2 = Beta_Sano / Alpha_Sano; % β/α
+ratio_3 = (Theta_Sano + Alpha_Sano) / Beta_Sano; % (θ + α)/β
+ratio_4 = Theta_Sano / Beta_Sano;% θ/β
+ratio_5 = (Theta_Sano + Alpha_Sano) / (Alpha_Sano + Beta_Sano); % (θ + α)/(α + β)
+ratio_6 = % γ/δ;
+
