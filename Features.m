@@ -1,5 +1,17 @@
-% Tomada de la Epileptic EEG Analysis Toolbox Ver2 de David Vela 2021,
-% modificada por Camila Lemus, septiembre 2022.
+%--------------------------------------------------------------------------
+% Función base, tomada de la Epileptic EEG Analysis Toolbox Ver2 de David 
+% Vela 2021, para features en dominio del tiempo. 
+% Modificada por Camila Lemus, en septiembre 2022 para la obtención de 
+% features en el dominio de la frecuencia de señales EEG.
+% Universidad del Valle de Guatemala
+%
+% Features:
+% Relative powers of the certain frequency bands are the most used 
+% frequency-domain features in all fields of analysis of the EEG signals. 
+% Several ratios between frequency bands are widely used as features in 
+% the EEG signal analysis, i.e., θ/α, β/α, (θ + α)/β, 
+% θ/β, (θ + α)/(α + β), γ/δ and (γ + β)/(δ + α).
+%--------------------------------------------------------------------------
 
 function [Matriz_features,channel_ventana,c] = Features(edf,fs,canales,muestras,c,op)
 % ARGUMENTOS DE LA FUNCION
@@ -59,16 +71,27 @@ end
 zc = zeros(size_cint,canales);
 mav = zeros(size_cint,canales);
 desviacion = zeros(size_cint,canales);
-Theta = zeros(size_cint,canales);
-Beta = zeros(size_cint,canales);
-Alpha = zeros(size_cint,canales);
-%Ratios - salida features
-ratio_1 = zeros(size_cint,canales);
-ratio_2 = zeros(size_cint,canales);
-
 curtosis = zeros(size_cint,canales);
 lzx = zeros(size_cint,canales);
 eac = zeros(size_cint,canales); %EAC
+
+%Subventanas para calculo de bandas.
+Theta = zeros(size_cint,canales);
+Beta = zeros(size_cint,canales);
+Alpha = zeros(size_cint,canales);
+Delta = zeros(size_cint,canales);
+Sigma = zeros(size_cint,canales);
+Gamma = zeros(size_cint,canales);
+
+%Ratios - salida features
+ratio_1 = zeros(size_cint,canales);
+ratio_2 = zeros(size_cint,canales);
+ratio_3 = zeros(size_cint,canales);
+ratio_4 = zeros(size_cint,canales);
+ratio_5 = zeros(size_cint,canales);
+ratio_6 = zeros(size_cint,canales);
+ratio_7 = zeros(size_cint,canales);
+
 ventana_EA = 10;
 %Muestras de cada subventana EAC
 muestas_ventana_EA = round(muestras/ventana_EA);
@@ -82,6 +105,7 @@ for i=1:canales
    z(:,i) =  ZC(channels(:,i),umbral)'; %Calcular todos los ZC de la señal
 end
 i=1;
+
 while(1)
      
     channel_ventana(i,k) = channels(i,k); 
@@ -91,55 +115,58 @@ while(1)
         window_signal = channel_ventana((j*muestras)+1:i,k);
         flag = flag+1;
         
-        if op(1) == 1 % θ/β 
-         Theta = bandpower(channel_ventana(:,k),fs,[4 8]); %theta (θ, 4–8 Hz)
-         Beta = bandpower(channel_ventana(:,k),fs,[12 30]); %beta (β, 12–30 Hz)
-         ratio_1(flag,k) = Theta/Beta; % θ/β 
-         %desviacion(flag,k) = std(channel_ventana(:,k));
-         %desviacion(flag,k) = std(window_signal);
+        if op(1) == 1  % θ/α
+            Theta = bandpower(channel_ventana(:,k),fs,[4 8]); %theta (θ, 4–8 Hz)
+            Alpha = bandpower(channel_ventana(:,k),fs,[8 12]); %alpha (α, 8–12 Hz)
+            ratio_1(flag,k) = Theta/Alpha; % θ/α
+            %desviacion(flag,k) = std(channel_ventana(:,k));
+            %desviacion(flag,k) = std(window_signal);
         end
         
         if op(2) == 1 % β/α
-         Beta = bandpower(channel_ventana(:,k),fs,[12 30]); %beta (β, 12–30 Hz
-         Alpha = bandpower(channel_ventana(:,k),fs,[8 12]); %alpha (α, 8–12 Hz)
-         ratio_2(flag,k) =  Beta / Alpha; % β/α
-         %curtosis(flag,k) = kurtosis(channel_ventana(:,k));
-         %curtosis(flag,k) = kurtosis(window_signal);
+            Beta = bandpower(channel_ventana(:,k),fs,[12 30]); %beta (β, 12–30 Hz
+            Alpha = bandpower(channel_ventana(:,k),fs,[8 12]); %alpha (α, 8–12 Hz)
+            ratio_2(flag,k) =  Beta / Alpha; % β/α
+            %curtosis(flag,k) = kurtosis(channel_ventana(:,k));
+            %curtosis(flag,k) = kurtosis(window_signal);
         end
         
-        if op(4) == 1
-            mav(flag,k) = mean(abs(channel_ventana((j*muestras)+1:i,k)));
+        if op(3) == 1 % (θ + α)/β
+            Theta = bandpower(channel_ventana(:,k),fs,[4 8]); %theta (θ, 4–8 Hz
+            Beta = bandpower(channel_ventana(:,k),fs,[12 30]); %beta (β, 12–30 Hz
+            Alpha = bandpower(channel_ventana(:,k),fs,[8 12]); %alpha (α, 8–12 Hz)
+            ratio_3  = (Theta + Alpha) / Beta; % (θ + α)/β
+            %Aquí estaba el ZC
         end
         
-        if op(5) == 1
-        %Energía acumulada por ventana (10 sub ventanas)
-            for iteac=0:ventana_EA-1
-                lowbound = iteac*muestas_ventana_EA+1;
-                highbound = (iteac+1)*muestas_ventana_EA;
-                size(eac);
-                if (ventana_EA*muestas_ventana_EA<highbound)
-                    break
-                end
-              eac(flag,k)=eac(flag,k)+var(window_signal(lowbound:highbound,1));
-            end
+        if op(4) == 1  % θ/β
+            Theta = bandpower(channel_ventana(:,k),fs,[4 8]); %theta (θ, 4–8 Hz)
+            Beta = bandpower(channel_ventana(:,k),fs,[12 30]); %beta (β, 12–30 Hz)
+            ratio_4(flag,k) = Theta/Beta; % θ/β
+            %mav(flag,k) = mean(abs(channel_ventana((j*muestras)+1:i,k)));
         end
-        if op(6) == 1
-        %FUNCIÓN DESHABILITADA POR SU REQUERIMIENTO DE TIEMPO
-            binlzx = (mean(abs(window_signal)))<=window_signal;
-            s = binary_seq_to_string(binlzx);
-            [lzx(flag,k), ~] = calc_lz_complexity(s,'exhaustive', 1);
+        
+        if op(5) == 1 % (θ + α)/(α + β)
+            Theta = bandpower(channel_ventana(:,k),fs,[4 8]); %theta (θ, 4–8 Hz)
+            Beta = bandpower(channel_ventana(:,k),fs,[12 30]); %beta (β, 12–30 Hz
+            Alpha = bandpower(channel_ventana(:,k),fs,[8 12]); %alpha (α, 8–12 Hz)
+            ratio_5  = (Theta + Alpha) / (Alpha + Beta); % (θ + α)/(α + β)
         end
-        if op(3) == 1
-            if(j>0) %contar ZC por cada ventana
-                for o=1:canales
-                    zc(flag,o) = sum(z(j*muestras:i,o) == 1);
-                end  
-            else
-                for o=1:canales
-                     zc(flag,o) = sum(z(1:(i-1),o) == 1);
-                end 
-            end
+        
+        if op(6) == 1 % γ/δ;
+            Gamma = bandpower(channel_ventana(:,k),fs,[30 50]); %gamma (γ, >30 Hz)
+            Delta = bandpower(channel_ventana(:,k),fs,[0.5 4]); %delta (δ, 0.5–4 Hz)
+            ratio_6  = Gamma / Delta; % γ/δ;
         end
+        
+%         if op(7) == 1 % (γ + β)/(δ + α)
+%             Beta = bandpower(channel_ventana(:,k),fs,[12 30]); %beta (β, 12–30 Hz
+%             Alpha = bandpower(channel_ventana(:,k),fs,[8 12]); %alpha (α, 8–12 Hz)
+%             Gamma = bandpower(channel_ventana(:,k),fs,[30 50]); %gamma (γ, >30 Hz)
+%             Delta = bandpower(channel_ventana(:,k),fs,[0.5 4]); %delta (δ, 0.5–4 Hz)
+%             ratio_7  = (Gamma + Beta) / (Delta + Alpha); % (γ + β)/(δ + α)
+%         end
+        
         j= j+1;   
     end
      if (i==size_c) 
@@ -155,7 +182,7 @@ end
 %Concatenar vector de características
 a=0;
 for i=1:canales
-  totfeatures(:,i+a:((i+a)+5)) = [ratio_1(:,i),ratio_2(:,i),zc(:,i),mav(:,i),eac(:,i),lzx(:,i)];
+  totfeatures(:,i+a:((i+a)+5)) = [ratio_1(:,i),ratio_2(:,i),ratio_3(:,i),ratio_4(:,i),ratio_5(:,i),ratio_6(:,i)];
   a=a+5;
 end
 resta=1;
