@@ -23,7 +23,7 @@ Fs_Sano = eeg_struct.sampling_frequency;
 canales = 1; %numero de canales
 muestras = 173; %calcular numero de muestras con tiempo
 c = 0; %que canales
-op = [1,1,1,0,0,0]; %vector para seleccionar opciones de features
+op = [1,1,0,0,0,0]; %vector para seleccionar opciones de features
 
 % Features
 MatrizFeaturesSano = Features(datos_Sano,Fs_Sano,canales,muestras,c,op);
@@ -42,7 +42,7 @@ Fs_Ictal = eeg_struct.sampling_frequency;
 canales = 1; %numero de canales
 muestras = 173; %calcular numero de muestras con tiempo
 c = 0; %que canales
-op = [1,1,1,0,0,0]; %vector para seleccionar opciones de features
+op = [1,1,0,0,0,0]; %vector para seleccionar opciones de features
 
 % Features
 MatrizFeaturesIctal = Features(datos_Ictal,Fs_Ictal,canales,muestras,c,op);
@@ -71,12 +71,18 @@ Sigma_Ictal = bandpower(datos_Ictal,Fs_Ictal,[12 14]); %sigma (σ, 12–14 Hz)
 % the EEG signal analysis, i.e., θ/α [63], β/α [63], (θ + α)/β [64], 
 % θ/β [64], (θ + α)/(α + β) [64], γ/δ [65] and (γ + β)/(δ + α) [65].
 
-ratio_1 = Theta_Sano / Beta_Sano; % θ/β 
-ratio_2 = Beta_Sano / Alpha_Sano; % β/α
-ratio_3 = (Theta_Sano + Alpha_Sano) / Beta_Sano; % (θ + α)/β
-ratio_4 = Theta_Sano / Beta_Sano;% θ/β
-ratio_5 = (Theta_Sano + Alpha_Sano) / (Alpha_Sano + Beta_Sano); % (θ + α)/(α + β)
-ratio_6 = Gamma_Sano / Sigma_Sano; % γ/δ;
-ratio_7 = (Gamma_Sano + Beta_Sano) / (Sigma_Sano + Alpha_Sano); % (γ + β)/(δ + α)
+ratio_1_Sano  = Theta_Sano / Beta_Sano; % θ/β 
+ratio_2_Sano  = Beta_Sano / Alpha_Sano; % β/α
+ratio_3_Sano  = (Theta_Sano + Alpha_Sano) / Beta_Sano; % (θ + α)/β
+ratio_4_Sano  = Theta_Sano / Beta_Sano;% θ/β
+ratio_5_Sano  = (Theta_Sano + Alpha_Sano) / (Alpha_Sano + Beta_Sano); % (θ + α)/(α + β)
+ratio_6_Sano  = Gamma_Sano / Sigma_Sano; % γ/δ;
+ratio_7_Sano  = (Gamma_Sano + Beta_Sano) / (Sigma_Sano + Alpha_Sano); % (γ + β)/(δ + α)
 
-
+ratio_1_Ictal = Theta_Ictal / Beta_Ictal; % θ/β 
+ratio_2_Ictal = Beta_Ictal / Alpha_Ictal; % β/α
+ratio_3_Ictal = (Theta_Ictal + Alpha_Ictal) / Beta_Sano; % (θ + α)/β
+ratio_4_Ictal = Theta_Ictal / Beta_Ictal; % θ/β
+ratio_5_Ictal = (Theta_Ictal + Alpha_Ictal) / (Alpha_Sano + Beta_Sano); % (θ + α)/(α + β)
+ratio_6_Ictal = Gamma_Ictal / Sigma_Ictal; % γ/δ;
+ratio_7_Ictal = (Gamma_Ictal + Beta_Ictal) / (Sigma_Sano + Alpha_Sano); % (γ + β)/(δ + α)
