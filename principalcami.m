@@ -10,12 +10,12 @@ clc; clear;
 
 % Ubonn SANO
 load('SetA_Sano_UBonn.mat', 'eeg_struct')
-datos_Sano = eeg_struct.data;
+datos_Sano = fft(eeg_struct.data);
 Fs_Sano = eeg_struct.sampling_frequency;
 
 % Ubonn ICTAL
 load('SetE_Ictal_UBonn.mat', 'eeg_struct')
-datos_Ictal = eeg_struct.data;
+datos_Ictal = fft(eeg_struct.data);
 Fs_Ictal = eeg_struct.sampling_frequency;
 
 % Parámetros función
@@ -23,7 +23,7 @@ Fs_Ictal = eeg_struct.sampling_frequency;
 canales = 1; %numero de canales
 muestras = 173; %calcular numero de muestras con tiempo
 c = 0; %que canales
-op = [0,0,0,0,0,0]; %vector para seleccionar opciones de features
+op = [1,0,0,0,0,0]; %vector para seleccionar opciones de features
 
 % Obtención de Features
 a = tic;
