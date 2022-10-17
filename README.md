@@ -1,9 +1,9 @@
 # Análisis y anotación de señales bioeléctricas de pacientes con epilepsia utilizando técnicas de aprendizaje automático supervisado y no supervisado
 
-Folder del trabajo de graduación de Camila Lemus Lone. Esta carpeta contiene los códigos utilizados para crear la interfaz de la Epileptic Analysis Toolbox Ver3. Se encuentran carpetas con resultados obtenidos, datos .mat generados y documentos de interés.
+Folder del trabajo de graduación de Camila Lemus Lone. 
 
 ## Contenido del repositorio
-Aquí se encuentran tres carpetas principales:
+En este repositorio se pueden encontrar los códigos utilizados para crear la interfaz de la Epileptic Analysis Toolbox Ver3, carpetas con los resultados obtenidos, datos .mat generados y documentos de interés del trabajo de graduación presentado. Las tres carpetas principales son:
 
 1. Documentos
 2. Programas de Matlab
