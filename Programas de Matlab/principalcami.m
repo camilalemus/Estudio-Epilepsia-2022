@@ -33,8 +33,8 @@ Fs_Perictal = eeg_struct.sampling_frequency;
 
 canales = 1; %numero de canales
 muestras = 5000; %calcular numero de muestras con tiempo
-can = 1; %que canales
-op = [0,0,0,1,0,0]; %vector para seleccionar opciones de features
+can = 2; %que canales
+op = [1,1,1,1,1,1]; %vector para seleccionar opciones de features
 
 % % Obtención de Features
 % a = tic;
@@ -50,15 +50,15 @@ op = [0,0,0,1,0,0]; %vector para seleccionar opciones de features
 % tiempo2 = toc(b);
 
 c = tic;
-MatrizFeaturesInterictal = Features(datos_Interictal,Fs_Interictal,canales,muestras,can,op);
-save('MatrizFeaturesInterictal4.mat','MatrizFeaturesInterictal');
-disp('Archivo guardado Interictal');
+MatrizFeaturesInterictalCANAL2 = Features(datos_Interictal,Fs_Interictal,canales,muestras,can,op);
+save('MatrizFeaturesInterictaCANAL2.mat','MatrizFeaturesInterictalCANAL2');
+disp('Archivo guardado Interictal CANAL 2');
 tiempo3 = toc(c);
 
 d = tic;
-MatrizFeaturesPerictal = Features(datos_Perictal,Fs_Perictal,canales,muestras,can,op);
-save('MatrizFeaturesPerictal4.mat','MatrizFeaturesPerictal');
-disp('Archivo guardado Perictal');
+MatrizFeaturesPerictalCANAL2 = Features(datos_Perictal,Fs_Perictal,canales,muestras,can,op);
+save('MatrizFeaturesPerictaCANAL2.mat','MatrizFeaturesPerictalCANAL2');
+disp('Archivo guardado Perictal CANAL 2');
 tiempo4 = toc(d);
 
 %% Vector de caracteristicas Ictal/Sano
@@ -71,9 +71,9 @@ tiempo4 = toc(d);
 
 %% Vector de caracteristicas Interictal/Perictal
 e = tic;
-VecCarInterictalPerictal = [MatrizFeaturesInterictal; MatrizFeaturesPerictal];
-save('VecCarInterictalPerictal4.mat','VecCarInterictalPerictal');
-disp('Vector de carcateristicas guardado InterictalPerictal');
+VecCarInterictalPerictal_CANAL2 = [MatrizFeaturesInterictalCANAL2; MatrizFeaturesPerictalCANAL2];
+save('VecCarInterictalPerictal_CANAL2.mat','VecCarInterictalPerictal_CANAL2');
+disp('Vector de carcateristicas guardado InterictalPerictal CANAL2');
 tiempo6 = toc(e);
 
 %%
@@ -81,3 +81,5 @@ tiempo6 = toc(e);
 % load('Patient_1_interictal_segment_0001.mat', 'interictal_segment_1');
 % edf = interictal_segment_1.data;
 % Fs = interictal_segment_1.sampling_frequency; % Frecuencia de muestreo en Hz  
+
+%% Graficar la señal
